@@ -6,22 +6,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
-    [Route("api/UsersAuth")]
+    [Route("api/v{version:apiVersion}/UsersAuth")]
+    [ApiVersionNeutral]
     [ApiController]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
         protected APIResponse _response;
-        public UsersController(IUserRepository userRepository) 
+        public UsersController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            this._response = new();
+            _response = new();
         }
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDTO model) 
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
             var loginResponse = await _userRepository.Login(model);
-            if(loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token))
+            if (loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token))
             {
                 _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
@@ -30,15 +31,15 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             _response.StatusCode = System.Net.HttpStatusCode.OK;
             _response.IsSuccess = false;
-            _response.Result= loginResponse;
+            _response.Result = loginResponse;
             return Ok(_response);
-            
+
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterationRequestDTO model)
         {
             bool ifUserNameUnique = _userRepository.isUniqueUser(model.UserName);
-            if (!ifUserNameUnique) 
+            if (!ifUserNameUnique)
             {
                 _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
@@ -56,7 +57,7 @@ namespace MagicVilla_VillaAPI.Controllers
             _response.StatusCode = System.Net.HttpStatusCode.OK;
             _response.IsSuccess = true;
             _response.Result = user;
-          
+
             return Ok(_response);
         }
     }

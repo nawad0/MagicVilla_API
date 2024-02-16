@@ -19,6 +19,7 @@ namespace MagicVilla_VillaAPI.Models.Dto
         public double Rate { get; set; }
         public int Sqft { get; set; }
         public string ImageUrl { get; set; }
+        public string? ImageLocalPath { get; set; }
         public string Amenity { get; set; }
     }
 
